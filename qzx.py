@@ -1,59 +1,44 @@
 import openai
 import streamlit as st
 
-# import pyperclip
-
 # Step 1: Obtain OpenAI API key
-openai.api_key = st.secrets["API_Key"]
 
-# openai.api_key = ""
+openai.api_key = "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"
 
-def generate_cover_letter(prompt, model, temperature, max_tokens):
-    completions = openai.Completion.create(
-        engine=model,
-        prompt=prompt,
+
+def generatechildstroy(model, prompt, temperature, max_tokens):
+    chat = openai.ChatCompletion.create(
+        model=model,
+        messages=prompt,
         temperature=temperature,
-        max_tokens=max_tokens,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0
+        max_tokens=max_tokens
     )
-    message = completions.choices[0].text
-    return message
+    reply = chat['choices'][0]['message']['content']
+    return reply
 
 
 def main():
-    st.set_page_config(page_title="GPT 求职信助手 OpenAI GPT Cover Letter Generator", page_icon=":guardsman:", layout="wide")
-    st.title("OpenAI GPT 求职信助手\nOpenAI GPT Cover Letter Generator")
-    st.markdown("根据你的能力以及职位要求，由 OpenAI GPT 帮助你生成一封专业的求职信。")
+    st.set_page_config(page_title="GPT 儿童故事绘 OpenAI GPT Child Story", page_icon=":guardsman:", layout="wide")
+    st.title("OpenAI GPT 儿童故事绘\nOpenAI GPT Child Story")
+    st.markdown("请根据您的要求，由 OpenAI GPT 帮助你生成一段儿童故事。")
 
     # Get user input
-    user_profile = st.text_area("输入你的特长 Your Profile:")
-    job_description = st.text_area("输入职位要求 Job Description:")
-    prompt = (f"Write a cover letter for this job:\n{job_description}\n\nMy profile:\n{user_profile}")
-    # prompt = (f"请用中文帮我写一封求职信，我的能力描述以及工作经验：\n{user_profile}\n\n职位描述：\n{job_description}")
-    model = "text-davinci-003"
+    describe_tone = st.text_area("输入描述语气 Describe Tone:")
+    story_character = st.text_area("输入故事主角 Story Character:")
+    story_content = st.text_area("输入故事内容 Story Content:")
+    prompt = [
+        {"role": "system", "content": "你是讲故事很厉害的人."},
+        {"role": "user", "content": f"用{describe_tone} 的语气写一段儿童故事:\n故事主角是\n{story_character}，故事内容是\n{story_content}\n"}
+    ]
+
+    model = "gpt-3.5-turbo"
     temperature = st.slider("选择随机值 Choose Temperature:", 0.0, 1.0, 0.7)
-    max_tokens = st.slider("选择求职信长度 Choose Max Tokens:", 50, 500, 1000)
+    max_tokens = st.slider("选择故事长度 Choose Max Tokens:", 50, 2000, 500)
 
-    if st.button("生成求职信 Generate"):
-        cover_letter = generate_cover_letter(prompt, model, temperature, max_tokens)
-        st.success("大功告成！求职信已经生成了！\n Success! Your Cover Letter is Ready")
-        st.markdown(cover_letter)
-        st.markdown("**点击以下按钮下载求职信 Click the Button to Download**")
-
-        st.download_button(
-            label="下载求职信 Download",
-            data=cover_letter,
-            file_name='cover_letter.md',
-        )
-
-        # if st.button("Download"):
-        #     with open("cover_letter.txt", "w") as f:
-        #         f.write(cover_letter)
-        #         f.close()
-        #         st.markdown("Your cover letter saved as **cover_letter.txt**")
-        #         st.markdown("You can also find the cover letter in the **Downloads** folder")
+    if st.button("生成故事 Generate"):
+        child_story = generatechildstroy(model, prompt, temperature, max_tokens)
+        st.success("大功告成！故事已经生成了！\n Success! Your Story is Ready")
+        st.markdown(child_story)
 
 
 if __name__ == "__main__":
