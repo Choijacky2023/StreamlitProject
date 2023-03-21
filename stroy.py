@@ -3,7 +3,7 @@ import streamlit as st
 
 # Step 1: Obtain OpenAI API key
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 
 def translatemandarinetoenglish(model, prompt):
