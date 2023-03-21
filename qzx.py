@@ -3,7 +3,7 @@ import streamlit as st
 
 # Step 1: Obtain OpenAI API key
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 
 def generatechildstroy(model, prompt, temperature, max_tokens):
